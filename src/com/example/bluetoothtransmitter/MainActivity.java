@@ -5,10 +5,12 @@ import java.util.UUID;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +25,7 @@ public class MainActivity extends Activity {
 	private static final int REQUEST_ENABLE_BT = 1;
 	private Button connectButton;
 	private Button serverButton;
+	private Button callButton;
 	public BluetoothAdapter mBluetoothAdapter;
 	private ListView myListView;
 	private ArrayAdapter<String> BTArrayAdapter;
@@ -52,7 +55,9 @@ public class MainActivity extends Activity {
 		connectButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				connect(v);
+				// Once our desired device has been found, connect to it
+				ConnectThread clientThread = new ConnectThread(serverDevice);
+				clientThread.run(mBluetoothAdapter);
 			}
 		});
 
@@ -60,7 +65,25 @@ public class MainActivity extends Activity {
 		serverButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				serverCode(v);
+				// start server and accept connection when requested
+				AcceptThread serverThread = new AcceptThread(mBluetoothAdapter,
+						getResources());
+				serverThread.run();
+			}
+		});
+
+		callButton = (Button) findViewById(R.id.call);
+		callButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					Intent callIntent = new Intent(Intent.ACTION_CALL);
+					callIntent.setData(Uri.parse("tel:9097817470"));
+					startActivity(callIntent);
+				} catch (ActivityNotFoundException activityException) {
+					Log.e("Calling a Phone Number", "Call failed",
+							activityException);
+				}
 			}
 		});
 
@@ -96,13 +119,6 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	public void serverCode(View view) {
-		// start server and accept connection when requested
-		AcceptThread serverThread = new AcceptThread(mBluetoothAdapter,
-				getResources());
-		serverThread.run();
-	}
-
 	// Search for devices
 	public void search() {
 		// Discover new bluetooth devices in the area
@@ -120,13 +136,6 @@ public class MainActivity extends Activity {
 			registerReceiver(bReceiver, new IntentFilter(
 					BluetoothDevice.ACTION_FOUND));
 		}
-	}
-
-	// Client side attempts to make connection to server
-	public void connect(View view) {
-		// Once our desired device has been found, connect to it
-		ConnectThread clientThread = new ConnectThread(serverDevice);
-		clientThread.run(mBluetoothAdapter, getResources());
 	}
 
 	final BroadcastReceiver bReceiver = new BroadcastReceiver() {

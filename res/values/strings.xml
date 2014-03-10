@@ -9,5 +9,6 @@
     <string name="search_button">Search</string>
     <string name="connect">Connect</string>
     <string name="server">Server</string>
+    <string name="call">Call</string>
 
 </resources>

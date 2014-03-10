@@ -6,14 +6,12 @@ import java.util.UUID;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.res.Resources;
 import android.util.Log;
 
 public class ConnectThread extends Thread {
 	private final BluetoothSocket mmSocket;
 	private final String TAG = "ConnectThread";
 	private UUID MY_UUID;
-	private Resources mResources;
 
 	public ConnectThread(BluetoothDevice device) {
 
@@ -35,10 +33,9 @@ public class ConnectThread extends Thread {
 		mmSocket = tmp;
 	}
 
-	public void run(BluetoothAdapter mBluetoothAdapter, Resources resources) {
+	public void run(BluetoothAdapter mBluetoothAdapter) {
 		// Cancel discovery because it will slow down the connection
 		mBluetoothAdapter.cancelDiscovery();
-		mResources = resources;
 		try {
 			// Connect the device through the socket. This will block
 			// until it succeeds or throws an exception

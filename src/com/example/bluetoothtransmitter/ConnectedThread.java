@@ -39,20 +39,19 @@ public class ConnectedThread extends Thread {
 			try {
 				// Read from the InputStream
 				mmInStream.read(buffer, byteOffset, 1);
+
 				// Send the obtained bytes to the UI activity
-				/*
-				 * mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
-				 * .sendToTarget();
-				 */
 				String dataPoint = new String(buffer, 0, byteOffset++);
 				if (dataPoint.length() > 0) {
-					if (dataPoint.substring(dataPoint.length() - 1) == " ") {
+					if (Character.isWhitespace(dataPoint.charAt(dataPoint
+							.length() - 1))) {
 						byteOffset = 0;
 						Log.d(TAG, dataPoint);
 					}
 				}
 				// Log.d(TAG, dataPoint);
-
+				// Log.d(TAG, dataPoint.substring(Math.max(0,
+				// dataPoint.length() - 1)));
 				// Loop string
 				// byteOffset = (byteOffset > 511) ? 0 : byteOffset;
 			} catch (IOException e) {

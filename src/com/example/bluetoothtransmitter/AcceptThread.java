@@ -81,30 +81,30 @@ public class AcceptThread extends Thread {
 		ConnectedThread mConnectedThread = new ConnectedThread(socket);
 		// Open ECG data file
 		try {
-			while (true) {
-				Log.d(TAG, "Input stream started");
-				InputStream mInputStream = mResources.getAssets().open(
-						"short_ecg.txt");
+			// while (true) {
+			Log.d(TAG, "Input stream started");
+			InputStream mInputStream = mResources.getAssets().open(
+					"short_ecg.txt");
 
-				if (mInputStream != null) {
-					InputStreamReader mInputStreamReader = new InputStreamReader(
-							mInputStream);
-					BufferedReader mBufferedReader = new BufferedReader(
-							mInputStreamReader);
-					String line;
+			if (mInputStream != null) {
+				InputStreamReader mInputStreamReader = new InputStreamReader(
+						mInputStream);
+				BufferedReader mBufferedReader = new BufferedReader(
+						mInputStreamReader);
+				String line;
 
-					// Read through ECG data file line by line and write
-					// to output stream
+				// Read through ECG data file line by line and write
+				// to output stream
 
-					while ((line = mBufferedReader.readLine()) != null) {
-						Log.d(TAG, line);
-						mConnectedThread.write(line.getBytes());
-						line = " ";
-						mConnectedThread.write(line.getBytes());
-					}
+				while ((line = mBufferedReader.readLine()) != null) {
+					Log.d(TAG, line);
+					mConnectedThread.write(line.getBytes());
+					line = "  ";
+					mConnectedThread.write(line.getBytes());
 				}
-				mInputStream.close();
 			}
+			mInputStream.close();
+			// }
 		} catch (IOException e) {
 			Log.e(TAG, "Error opening input file");
 			e.printStackTrace();
